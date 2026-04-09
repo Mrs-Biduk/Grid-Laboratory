@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Грид-лаборатория</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --red: #E30613;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --gray-100: #f5f5f5;
+            --gray-200: #e8e8e8;
+            --gray-300: #d0d0d0;
+            --gray-400: #a0a0a0;
+            --gray-500: #707070;
+            --gray-600: #404040;
+            --blue: #0055FF;
+            --yellow: #FFD600;
+            --grid-gap: 2px;
+            --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-200);
+            transition: transform 0.3s ease;
+        }
+
+        nav.hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+        }
+
+        .nav-logo span {
+            color: var(--red);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-500);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--black);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            overflow: hidden;
+            padding-top: 56px;
+        }
+
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--red);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title .line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-title .line span {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-title .line:nth-child(2) span {
+            animation-delay: 0.12s;
+        }
+
+        .hero-title .line:nth-child(3) span {
+            animation-delay: 0.24s;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: var(--gray-500);
+            max-width: 480px;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeIn 1s 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            opacity: 0;
+            animation: fadeIn 1s 0.7s forwards;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 0;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-sans);
+            letter-spacing: 0.02em;
+        }
+
+        .btn-primary {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #c00510;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(227,6,19,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--black);
+            border: 2px solid var(--black);
+        }
+
+        .btn-secondary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .hero-right {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-100);
+            overflow: hidden;
+        }
+
+        .hero-grid-demo {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2px;
+            width: 80%;
+            max-width: 500px;
+            aspect-ratio: 3/4;
+            position: relative;
+        }
+
+        .hero-grid-cell {
+            background: var(--gray-300);
+            transition: background 0.3s ease;
+        }
+
+        .hero-grid-cell.active {
+            background: var(--red);
+        }
+
+        .hero-grid-cell.accent {
+            background: var(--blue);
+        }
+
+        .hero-grid-cell.accent2 {
+            background: var(--yellow);
+        }
+
+        .hero-grid-lines {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        /* ===== SECTION COMMON ===== */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .section-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-number {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--red);
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--gray-500);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* ===== SWISS PRINCIPLES ===== */
+        .swiss-section {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .swiss-section .section-number {
+            color: var(--yellow);
+        }
+
+        .swiss-section .section-desc {
+            color: var(--gray-400);
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2px;
+        }
+
+        .principle-card {
+            background: var(--gray-600);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .principle-card:hover {
+            background: var(--gray-500);
+        }
+
+        .principle-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .principle-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .principle-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--gray-400);
+        }
+
+        .principle-number {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--gray-400);
+        }
+
+        /* ===== TIMELINE ===== */
+        .timeline-section {
+            background: var(--gray-100);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-300);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 3px solid var(--red);
+            transform: translateX(-5px);
+            z-index: 1;
+        }
+
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--red);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            line-height: 1.6;
+            max-width: 600px;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-demo {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .timeline-demo-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        /* Print grid demo */
+        .print-grid {
+            display: grid;
+            grid-template-columns: 60px 1fr 1fr 1fr 40px;
+            grid-template-rows: auto auto auto;
+            gap: 1px;
+            background: var(--gray-200);
+            border: 1px solid var(--gray-300);
+        }
+
+        .print-grid .margin { background: var(--gray-100); }
+        .print-grid .gutter { background: var(--gray-200); }
+        .print-grid .col { background: var(--white); padding: 0.75rem; }
+        .print-grid .col .text-line { height: 3px; background: var(--gray-300); margin-bottom: 4px; }
+        .print-grid .col .text-line:last-child { width: 60%; }
+
+        /* Table layout demo */
+        .table-layout {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-layout td {
+            border: 1px solid var(--gray-200);
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+
+        .table-layout td.header-cell {
+            background: var(--gray-100);
+            font-weight: 600;
+        }
+
+        .table-layout td .text-line { height: 3px; background: var(--gray-300); margin-bottom: 4px; }
+
+        /* Float demo */
+        .float-layout {
+            overflow: hidden;
+        }
+
+        .float-sidebar {
+            float: left;
+            width: 30%;
+            background: var(--gray-100);
+            padding: 0.75rem;
+        }
+
+        .float-main {
+            float: right;
+            width: 68%;
+            padding: 0.75rem;
+        }
+
+        .float-main .text-line { height: 3px; background: var(--gray-300); margin-bottom: 4px; }
+
+        .clearfix::after {
+            content: '';
+            display: table;
+            clear: both;
+        }
+
+        /* Flexbox demo */
+        .flex-layout {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .flex-item {
+            padding: 0.75rem;
+            background: var(--gray-100);
+            flex: 1;
+        }
+
+        .flex-item .text-line { height: 3px; background: var(--gray-300); margin-bottom: 4px; }
+
+        /* CSS Grid demo */
+        .cssgrid-layout {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto;
+            gap: 0.5rem;
+        }
+
+        .grid-item {
+            padding: 0.75rem;
+            background: var(--gray-100);
+        }
+
+        .grid-item.span-2 { grid-column: span 2; }
+        .grid-item.span-row { grid-row: span 2; }
+
+        .grid-item .text-line { height: 3px; background: var(--gray-300); margin-bottom: 4px; }
+
+        /* ===== COMPARISON ===== */
+        .comparison-section {
+            background: var(--white);
+        }
+
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: 2px solid var(--black);
+        }
+
+        .comparison-panel {
+            padding: 3rem;
+        }
+
+        .comparison-panel:first-child {
+            border-right: 2px solid var(--black);
+        }
+
+        .comparison-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+        }
+
+        .comparison-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-visual {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--gray-100);
+        }
+
+        .code-block {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            line-height: 1.8;
+            background: var(--black);
+            color: #e0e0e0;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .code-block .keyword { color: var(--red); }
+        .code-block .property { color: #7ec699; }
+        .code-block .value { color: #e6a15c; }
+        .code-block .comment { color: #606060; font-style: italic; }
+        .code-block .selector { color: #c8a2ff; }
+
+        /* ===== INTERACTIVE LAB ===== */
+        .lab-section {
+            background: var(--gray-100);
+        }
+
+        .lab-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .lab-btn {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--white);
+            border: 2px solid var(--gray-300);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-sans);
+            letter-spacing: 0.02em;
+        }
+
+        .lab-btn:hover, .lab-btn.active {
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(227,6,19,0.05);
+        }
+
+        .lab-canvas {
+            background: var(--white);
+            border: 2px solid var(--black);
+            min-height: 400px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .lab-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .lab-grid-overlay .col-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(227,6,19,0.15);
+        }
+
+        .lab-items {
+            display: grid;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+            min-height: 350px;
+        }
+
+        .lab-item {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lab-item-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lab-item-content {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .lab-item:hover {
+            background: var(--red);
+            color: var(--white);
+            transform: scale(1.02);
+            border-color: var(--red);
+        }
+
+        .lab-item:hover .lab-item-label {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Lab mode: flexbox */
+        .lab-items.mode-flex {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .lab-items.mode-flex .lab-item {
+            flex: 1 1 calc(33.333% - 1rem);
+            min-width: 200px;
+        }
+
+        /* Lab mode: grid 3-col */
+        .lab-items.mode-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* Lab mode: grid 4-col */
+        .lab-items.mode-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* Lab mode: asymmetric */
+        .lab-items.mode-asymmetric {
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto;
+        }
+
+        .lab-items.mode-asymmetric .lab-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+        .lab-items.mode-asymmetric .lab-item:nth-child(2) { grid-column: span 1; }
+        .lab-items.mode-asymmetric .lab-item:nth-child(3) { grid-column: span 1; }
+        .lab-items.mode-asymmetric .lab-item:nth-child(4) { grid-column: span 2; }
+
+        /* Lab mode: masonry-like */
+        .lab-items.mode-masonry {
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: minmax(50px, auto);
+        }
+
+        .lab-items.mode-masonry .lab-item:nth-child(1) { grid-row: span 3; }
+        .lab-items.mode-masonry .lab-item:nth-child(2) { grid-row: span 2; }
+        .lab-items.mode-masonry .lab-item:nth-child(3) { grid-row: span 1; }
+        .lab-items.mode-masonry .lab-item:nth-child(4) { grid-row: span 2; }
+
+        /* Lab mode: print */
+        .lab-items.mode-print {
+            grid-template-columns: 80px 1fr 1fr 1fr 60px;
+            grid-template-rows: auto auto auto;
+            gap: 2px;
+        }
+
+        .lab-items.mode-print .lab-item:nth-child(1) { grid-column: 2 / 3; background: var(--gray-200); }
+        .lab-items.mode-print .lab-item:nth-child(2) { grid-column: 3 / 4; background: var(--gray-200); }
+        .lab-items.mode-print .lab-item:nth-child(3) { grid-column: 4 / 5; background: var(--gray-200); }
+        .lab-items.mode-print .lab-item:nth-child(4) { grid-column: 2 / 5; background: var(--gray-200); }
+
+        /* ===== SWISS TYPE DEMO ===== */
+        .swiss-demo-section {
+            background: var(--white);
+            padding: 6rem 0;
+        }
+
+        .swiss-demo-header {
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+        }
+
+        .swiss-demo-canvas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-top: 2px solid var(--black);
+            border-bottom: 2px solid var(--black);
+        }
+
+        .swiss-demo-left {
+            padding: 4rem;
+            border-right: 2px solid var(--black);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swiss-demo-left::before {
+            content: '1950';
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--gray-300);
+        }
+
+        .swiss-poster {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 0;
+            height: 100%;
+            min-height: 350px;
+        }
+
+        .poster-gutter {
+            grid-column: 2;
+            grid-row: 1 / -1;
+            width: 1px;
+            background: var(--gray-300);
+            position: absolute;
+            left: calc(40px + 2rem);
+            top: 4rem;
+            bottom: 2rem;
+        }
+
+        .poster-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .poster-body {
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: var(--gray-500);
+            grid-column: 2;
+        }
+
+        .poster-meta {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            grid-column: 2;
+            margin-top: auto;
+        }
+
+        .swiss-demo-right {
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swiss-demo-right::before {
+            content: '2026';
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--gray-300);
+        }
+
+        .modern-poster {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            height: 100%;
+            min-height: 350px;
+        }
+
+        .modern-item {
+            background: var(--gray-100);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .modern-item:nth-child(1) {
+            grid-column: 1 / 3;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .modern-item:nth-child(1) .modern-item-label {
+            color: var(--gray-400);
+        }
+
+        .modern-item:nth-child(4) {
+            grid-column: 2 / 4;
+        }
+
+        .modern-item-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .modern-item-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .modern-item-desc {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        /* ===== TYPE SCALE ===== */
+        .type-section {
+            background: var(--gray-100);
+        }
+
+        .type-scale {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .type-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .type-card-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-card-example {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .type-card-meta {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--gray-400);
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* ===== GRID VISUALIZER ===== */
+        .visualizer-section {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .visualizer-section .section-desc {
+            color: var(--gray-400);
+        }
+
+        .visualizer-section .section-number {
+            color: var(--yellow);
+        }
+
+        .visualizer-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .control-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .control-slider {
+            -webkit-appearance: none;
+            width: 150px;
+            height: 4px;
+            background: var(--gray-600);
+            outline: none;
+            border-radius: 2px;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--red);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .visualizer-grid {
+            display: grid;
+            gap: 2px;
+            min-height: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .viz-cell {
+            background: var(--gray-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--gray-400);
+            transition: background 0.3s;
+        }
+
+        .viz-cell:hover {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .viz-cell.highlight {
+            background: rgba(227,6,19,0.3);
+            border: 1px solid var(--red);
+        }
+
+        /* ===== CONNECTIONS ===== */
+        .connections-section {
+            background: var(--white);
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0;
+            align-items: start;
+        }
+
+        .conn-column {
+            padding: 2rem;
+        }
+
+        .conn-column h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .conn-item {
+            padding: 1.25rem;
+            border-left: 3px solid var(--gray-200);
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .conn-item:hover {
+            border-left-color: var(--red);
+            background: var(--gray-100);
+        }
+
+        .conn-item h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .conn-item p {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        .conn-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 2rem 1.5rem;
+        }
+
+        .arrow-line {
+            width: 2px;
+            height: 40px;
+            background: var(--gray-300);
+        }
+
+        .arrow-diamond {
+            width: 12px;
+            height: 12px;
+            background: var(--red);
+            transform: rotate(45deg);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 4rem 2rem;
+        }
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand span {
+            color: var(--red);
+        }
+
+        .footer-desc {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            color: var(--gray-400);
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--gray-300);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 0.3rem 0;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-600);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+        }
+
+        .footer-grid-cell {
+            aspect-ratio: 1;
+            background: var(--gray-600);
+            transition: background 0.3s;
+        }
+
+        .footer-grid-cell:hover {
+            background: var(--red);
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            .hero-right {
+                display: none;
+            }
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+            .comparison-panel:first-child {
+                border-right: none;
+                border-bottom: 2px solid var(--black);
+            }
+            .swiss-demo-canvas {
+                grid-template-columns: 1fr;
+            }
+            .swiss-demo-left {
+                border-right: none;
+                border-bottom: 2px solid var(--black);
+            }
+            .connections-grid {
+                grid-template-columns: 1fr;
+            }
+            .conn-arrow {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .arrow-line {
+                width: 40px;
+                height: 2px;
+            }
+            .footer-inner {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 1.5rem;
+            }
+            .hero-left {
+                padding: 3rem 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .lab-items.mode-asymmetric,
+            .lab-items.mode-print {
+                grid-template-columns: 1fr 1fr;
+            }
+            .lab-items.mode-asymmetric .lab-item:nth-child(1),
+            .lab-items.mode-asymmetric .lab-item:nth-child(4) {
+                grid-column: span 2;
+            }
+            .modern-poster {
+                grid-template-columns: 1fr;
+            }
+            .modern-item:nth-child(1),
+            .modern-item:nth-child(4) {
+                grid-column: span 1;
+            }
+        }
+
+        /* ===== SPECIAL EFFECTS ===== */
+        .grid-pattern-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(rgba(0,0,0,1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.015;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ===== COUNTER ANIMATION ===== */
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            color: var(--red);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 0.5rem;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* ===== MARQUEE ===== */
+        .marquee-section {
+            overflow: hidden;
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--white);
+        }
+
+        .marquee-track {
+            display: flex;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-item {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray-300);
+            white-space: nowrap;
+            padding: 0 2rem;
+        }
+
+        .marquee-item span {
+            color: var(--red);
+            margin: 0 1rem;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+
+    <!-- NAVIGATION -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <div class="nav-logo">Грид<span>.</span>Лаборатория</div>
+            <ul class="nav-links">
+                <li><a href="#swiss">Принципы</a></li>
+                <li><a href="#timeline">Эволюция</a></li>
+                <li><a href="#lab">Лаборатория</a></li>
+                <li><a href="#visualizer">Визуализатор</a></li>
+                <li><a href="#connections">Связи</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-left">
+            <div class="hero-label">Исследование грид-систем</div>
+            <h1 class="hero-title">
+                <span class="line"><span>От печатной</span></span>
+                <span class="line"><span>сетки к</span></span>
+                <span class="line"><span>CSS Grid</span></span>
+            </h1>
+            <p class="hero-subtitle">
+                Проследите путь от швейцарской типографики 1950-х до современных CSS-технологий. 
+                Узнайте, как математическая строгость печатных сеток живёт в каждой веб-странице.
+            </p>
+            <div class="hero-cta">
+                <a href="#timeline" class="btn btn-primary">Начать исследование →</a>
+                <a href="#lab" class="btn btn-secondary">Лаборатория</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="hero-grid-demo" id="heroGrid"></div>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-item">Швейцарская типографика <span>✦</span></div>
+            <div class="marquee-item">Josef Müller-Brockmann <span>✦</span></div>
+            <div class="marquee-item">Модульные сетки <span>✦</span></div>
+            <div class="marquee-item">CSS Grid <span>✦</span></div>
+            <div class="marquee-item">Flexbox <span>✦</span></div>
+            <div class="marquee-item">Responsive Design <span>✦</span></div>
+            <div class="marquee-item">Grid Systems in Graphic Design <span>✦</span></div>
+            <div class="marquee-item">Helvetica <span>✦</span></div>
+            <div class="marquee-item">Асимметрия <span>✦</span></div>
+            <div class="marquee-item">Визуальная иерархия <span>✦</span></div>
+            <div class="marquee-item">Швейцарская типографика <span>✦</span></div>
+            <div class="marquee-item">Josef Müller-Brockmann <span>✦</span></div>
+            <div class="marquee-item">Модульные сетки <span>✦</span></div>
+            <div class="marquee-item">CSS Grid <span>✦</span></div>
+            <div class="marquee-item">Flexbox <span>✦</span></div>
+            <div class="marquee-item">Responsive Design <span>✦</span></div>
+            <div class="marquee-item">Grid Systems in Graphic Design <span>✦</span></div>
+            <div class="marquee-item">Helvetica <span>✦</span></div>
+            <div class="marquee-item">Асимметрия <span>✦</span></div>
+            <div class="marquee-item">Визуальная иерархия <span>✦</span></div>
+        </div>
+    </div>
+
+    <!-- SWISS PRINCIPLES -->
+    <section class="swiss-section" id="swiss">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">01 — Принципы</div>
+                <h2 class="section-title reveal reveal-delay-1">Швейцарская<br>типографика</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    Международный типографический стиль, рождённый в Швейцарии в 1950-х, 
+                    заложил математические основы, на которых сегодня строится каждый современный сайт.
+                </p>
+            </div>
+
+            <div class="principles-grid">
+                <div class="principle-card reveal">
+                    <div class="principle-number">01</div>
+                    <div class="principle-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="8" y1="8" x2="8" y2="40"/>
+                            <line x1="16" y1="8" x2="16" y2="40"/>
+                            <line x1="24" y1="8" x2="24" y2="40"/>
+                            <line x1="32" y1="8" x2="32" y2="40"/>
+                            <line x1="40" y1="8" x2="40" y2="40"/>
+                        </svg>
+                    </div>
+                    <h3>Модульная сетка</h3>
+                    <p>Страница делится на колонки и поля, создавая невидимый каркас. Этот же принцип — основа CSS Grid Layout, где grid-template-columns задаёт те же колонки.</p>
+                </div>
+
+                <div class="principle-card reveal reveal-delay-1">
+                    <div class="principle-number">02</div>
+                    <div class="principle-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="8" y="12" width="32" height="4"/>
+                            <rect x="8" y="22" width="20" height="4"/>
+                            <rect x="8" y="32" width="28" height="4"/>
+                        </svg>
+                    </div>
+                    <h3>Визуальная иерархия</h3>
+                    <p>Размер, вес и положение элемента определяют его значимость. В CSS это выражается через font-size, font-weight, z-index и порядок в DOM.</p>
+                </div>
+
+                <div class="principle-card reveal reveal-delay-2">
+                    <div class="principle-number">03</div>
+                    <div class="principle-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="6" y="6" width="16" height="16"/>
+                            <rect x="26" y="6" width="16" height="10"/>
+                            <rect x="6" y="26" width="10" height="16"/>
+                            <rect x="20" y="26" width="22" height="16"/>
+                        </svg>
+                    </div>
+                    <h3>Асимметричный баланс</h3>
+                    <p>Швейцарские дизайнеры отвергли симметрию ради динамичной композиции. CSS Grid с именованными областями позволяет создавать те же асимметричные макеты.</p>
+                </div>
+
+                <div class="principle-card reveal reveal-delay-3">
+                    <div class="principle-number">04</div>
+                    <div class="principle-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="24" cy="24" r="16"/>
+                            <line x1="24" y1="8" x2="24" y2="40"/>
+                            <line x1="8" y1="24" x2="40" y2="24"/>
+                        </svg>
+                    </div>
+                    <h3>Математическая точность</h3>
+                    <p>Пропорции, золотое сечение, модульные отношения. В вебе это rem-единицы, калькуляции через calc() и пропорциональные отношения в clamp().</p>
+                </div>
+
+                <div class="principle-card reveal reveal-delay-4">
+                    <div class="principle-number">05</div>
+                    <div class="principle-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <text x="6" y="28" font-family="serif" font-size="24" fill="currentColor" stroke="none">Aa</text>
+                        </svg>
+                    </div>
+                    <h3>Гротескная типографика</h3>
+                    <p>Helvetica, Univers, Akzidenz-Grotesk — шрифты без засечек стали стандартом. Сегодня Inter, Roboto и SF Pro продолжают эту традицию в интерфейсах.</p>
+                </div>
+
+                <div class="principle-card reveal">
+                    <div class="principle-number">06</div>
+                    <div class="principle-icon">
+                        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="8" y="8" width="32" height="32" rx="0"/>
+                            <line x1="8" y1="24" x2="40" y2="24"/>
+                        </svg>
+                    </div>
+                    <h3>Негативное пространство</h3>
+                    <p>Пустота — активный элемент композиции. В CSS это margin, padding и gap. Швейцарцы знали: воздух на странице так же важен, как контент.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="timeline-section" id="timeline">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">02 — Эволюция</div>
+                <h2 class="section-title reveal reveal-delay-1">Хронология<br>грид-систем</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    От карандашных разметок на бумаге до декларативных CSS-правил — 
+                    каждый этап развивал идеи, заложенные швейцарскими дизайнерами.
+                </p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1950-е</div>
+                    <div class="timeline-title">Швейцарская модульная сетка</div>
+                    <div class="timeline-desc">
+                        Йозеф Мюллер-Брокманн и Эмиль Рудер систематизируют принципы модульной сетки. 
+                        Книга «Grid Systems in Graphic Design» (1981) становится библией дизайнеров. 
+                        Страница делится на колонки, поля и горизонтальные направляющие.
+                    </div>
+                    <div class="timeline-demo">
+                        <div class="timeline-demo-label">Демонстрация печатной сетки</div>
+                        <div class="print-grid">
+                            <div class="margin" style="grid-row: span 3"></div>
+                            <div class="col">
+                                <div class="text-line" style="width:90%"></div>
+                                <div class="text-line" style="width:80%"></div>
+                                <div class="text-line" style="width:85%"></div>
+                                <div class="text-line" style="width:60%"></div>
+                            </div>
+                            <div class="gutter"></div>
+                            <div class="col">
+                                <div class="text-line" style="width:95%"></div>
+                                <div class="text-line" style="width:70%"></div>
+                                <div class="text-line" style="width:90%"></div>
+                            </div>
+                            <div class="gutter"></div>
+                            <div class="col">
+                                <div class="text-line" style="width:88%"></div>
+                                <div class="text-line" style="width:75%"></div>
+                                <div class="text-line" style="width:92%"></div>
+                                <div class="text-line" style="width:40%"></div>
+                            </div>
+                            <div class="margin" style="grid-row: span 3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">1996</div>
+                    <div class="timeline-title">Табличная вёрстка</div>
+                    <div class="timeline-desc">
+                        Первые веб-дизайнеры использовали HTML-таблицы для создания макетов. 
+                        Невидимые таблицы имитировали колонки печатных полос. 
+                        Это было костыльное, но работающее решение — дух сетки выжил в вебе.
+                    </div>
+                    <div class="timeline-demo">
+                        <div class="timeline-demo-label">Демонстрация табличной вёрстки</div>
+                        <table class="table-layout">
+                            <tr>
+                                <td class="header-cell" colspan="3">
+                                    <div class="text-line" style="width:30%; height:8px; background:var(--gray-300); margin-bottom:0"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:25%">
+                                    <div class="text-line" style="width:80%"></div>
+                                    <div class="text-line" style="width:60%"></div>
+                                </td>
+                                <td style="width:50%">
+                                    <div class="text-line" style="width:100%"></div>
+                                    <div class="text-line" style="width:90%"></div>
+                                    <div class="text-line" style="width:95%"></div>
+                                    <div class="text-line" style="width:70%"></div>
+                                </td>
+                                <td style="width:25%">
+                                    <div class="text-line" style="width:85%"></div>
+                                    <div class="text-line" style="width:70%"></div>
+                                    <div class="text-line" style="width:90%"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2000-е</div>
+                    <div class="timeline-title">Float и Clear</div>
+                    <div class="timeline-desc">
+                        CSS-свойство float, созданное для обтекания текста вокруг изображений, 
+                        стало основным инструментом создания колонок. clearfix-хаки, 
+                        отрицательные margin — эпоха борьбы с потоком документа.
+                    </div>
+                    <div class="timeline-demo clearfix">
+                        <div class="timeline-demo-label">Демонстрация float-сетки</div>
+                        <div class="float-layout">
+                            <div class="float-sidebar">
+                                <div class="text-line" style="width:90%"></div>
+                                <div class="text-line" style="width:70%"></div>
+                            </div>
+                            <div class="float-main">
+                                <div class="text-line" style="width:100%"></div>
+                                <div class="text-line" style="width:85%"></div>
+                                <div class="text-line" style="width:95%"></div>
+                                <div class="text-line" style="width:60%"></div>
+                                <div class="text-line" style="width:100%"></div>
+                                <div class="text-line" style="width:75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2012</div>
+                    <div class="timeline-title">Flexbox</div>
+                    <div class="timeline-desc">
+                        CSS Flexible Box Layout революционизировал одномерные раскладки. 
+                        Элементы стали выравниваться, распределяться и перестраиваться 
+                        без хаков. Flexbox — это «умная» строка, которая адаптируется к контенту.
+                    </div>
+                    <div class="timeline-demo">
+                        <div class="timeline-demo-label">Демонстрация Flexbox</div>
+                        <div class="flex-layout">
+                            <div class="flex-item">
+                                <div class="text-line" style="width:80%"></div>
+                                <div class="text-line" style="width:60%"></div>
+                            </div>
+                            <div class="flex-item">
+                                <div class="text-line" style="width:100%"></div>
+                                <div class="text-line" style="width:90%"></div>
+                                <div class="text-line" style="width:70%"></div>
+                            </div>
+                            <div class="flex-item">
+                                <div class="text-line" style="width:85%"></div>
+                                <div class="text-line" style="width:65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2017</div>
+                    <div class="timeline-title">CSS Grid Layout</div>
+                    <div class="timeline-desc">
+                        Двумерная система, которая наконец воплотила мечты швейцарских дизайнеров в коде. 
+                        Колонки, строки, именованные области, автоматическое размещение — 
+                        всё, что рисовали карандашом на миллиметровке, стало декларативным CSS.
+                    </div>
+                    <div class="timeline-demo">
+                        <div class="timeline-demo-label">Демонстрация CSS Grid</div>
+                        <div class="cssgrid-layout">
+                            <div class="grid-item span-2">
+                                <div class="text-line" style="width:100%"></div>
+                                <div class="text-line" style="width:80%"></div>
+                                <div class="text-line" style="width:90%"></div>
+                            </div>
+                            <div class="grid-item">
+                                <div class="text-line" style="width:85%"></div>
+                                <div class="text-line" style="width:60%"></div>
+                            </div>
+                            <div class="grid-item">
+                                <div class="text-line" style="width:70%"></div>
+                                <div class="text-line" style="width:90%"></div>
+                            </div>
+                            <div class="grid-item span-2">
+                                <div class="text-line" style="width:95%"></div>
+                                <div class="text-line" style="width:75%"></div>
+                                <div class="text-line" style="width:85%"></div>
+                            </div>
+                            <div class="grid-item span-row">
+                                <div class="text-line" style="width:80%"></div>
+                                <div class="text-line" style="width:65%"></div>
+                                <div class="text-line" style="width:90%"></div>
+                                <div class="text-line" style="width:50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-year">2023+</div>
+                    <div class="timeline-title">Subgrid, Container Queries, Masonry</div>
+                    <div class="timeline-desc">
+                        Новое поколение грид-технологий. Subgrid позволяет вложенным элементам 
+                        наследовать родительскую сетку. Container Queries дают компонентную адаптивность. 
+                        Masonry-раскладка — мечта каждого дизайнера.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SWISS vs MODERN COMPARISON -->
+    <section class="comparison-section" id="comparison">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">03 — Сравнение</div>
+                <h2 class="section-title reveal reveal-delay-1">Печать vs Код</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    Одна и та же идея, разделённая 70 годами технологий.
+                </p>
+            </div>
+
+            <div class="comparison-container reveal">
+                <div class="comparison-panel">
+                    <div class="comparison-label">Печатная вёрстка</div>
+                    <div class="comparison-title">Модульная сетка<br>Мюллера-Брокманна</div>
+                    <p style="font-size:0.9rem; color:var(--gray-500); line-height:1.6;">
+                        Дизайнер рисует карандашом на кальке: поля, колонки, направляющие. 
+                        Каждый элемент размещается по математическим правилам. 
+                        Сетка невидима, но определяет всё.
+                    </p>
+                    <div class="comparison-visual">
+                        <div style="display: grid; grid-template-columns: 40px 1fr 1fr 1fr 40px; gap: 1px; background: var(--gray-300);">
+                            <div style="background:var(--gray-100); padding:1rem; grid-row:span 3;"></div>
+                            <div style="background:var(--white); padding:1rem;">
+                                <div style="height:6px; width:100%; background:var(--gray-300); margin-bottom:4px;"></div>
+                                <div style="height:6px; width:80%; background:var(--gray-300); margin-bottom:4px;"></div>
+                                <div style="height:6px; width:90%; background:var(--gray-300); margin-bottom:4px;"></div>
+                            </div>
+                            <div style="background:var(--gray-200);"></div>
+                            <div style="background:var(--white); padding:1rem;">
+                                <div style="height:6px; width:95%; background:var(--gray-300); margin-bottom:4px;"></div>
+                                <div style="height:6px; width:70%; background:var(--gray-300); margin-bottom:4px;"></div>
+                            </div>
+                            <div style="background:var(--gray-200);"></div>
+                            <div style="background:var(--white); padding:1rem;">
+                                <div style="height:6px; width:88%; background:var(--gray-300); margin-bottom:4px;"></div>
+                                <div style="height:6px; width:75%; background:var(--gray-300); margin-bottom:4px;"></div>
+                                <div style="height:6px; width:60%; background:var(--gray-300); margin-bottom:4px;"></div>
+                            </div>
+                            <div style="background:var(--gray-100); padding:1rem; grid-row:span 3;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="comparison-panel">
+                    <div class="comparison-label">CSS Grid Layout</div>
+                    <div class="comparison-title">Та же сетка,<br>другой язык</div>
+                    <p style="font-size:0.9rem; color:var(--gray-500); line-height:1.6;">
+                        Вместо карандаша — CSS. Вместо кальки — браузерный рендерер. 
+                        Но принципы те же: поля, колонки, пропорции. 
+                        Код стал новым инструментом типографа.
+                    </p>
+                    <div class="code-block">
+                        <span class="comment">/* Та же сетка в CSS */</span><br>
+                        <span class="selector">.layout</span> {<br>
+                        &nbsp;&nbsp;<span class="property">display</span>: <span class="value">grid</span>;<br>
+                        &nbsp;&nbsp;<span class="property">grid-template-columns</span>:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="value">60px 1fr 1fr 1fr 60px</span>;<br>
+                        &nbsp;&nbsp;<span class="property">gap</span>: <span class="value">2px</span>;<br>
+                        &nbsp;&nbsp;<span class="property">padding</span>: <span class="value">2rem</span>;<br>
+                        }<br><br>
+                        <span class="comment">/* Поля = 60px, колонки = 1fr */</span><br>
+                        <span class="comment">/* gap = швы между колонками */</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SWISS vs MODERN VISUAL -->
+    <section class="swiss-demo-section">
+        <div class="swiss-demo-header">
+            <div class="section-number reveal">04 — Визуальный диалог</div>
+            <h2 class="section-title reveal reveal-delay-1">Две эпохи,<br>один принцип</h2>
+        </div>
+        <div class="swiss-demo-canvas reveal">
+            <div class="swiss-demo-left">
+                <div class="poster-gutter"></div>
+                <div class="swiss-poster">
+                    <div class="poster-title">Die Neue<br>Grafik</div>
+                    <div class="poster-body">
+                        Журнал «Die Neue Grafik», основанный в 1958 году Мюллером-Брокманном, 
+                        Рудером и Хофманом, стал манифестом швейцарского стиля. 
+                        Каждая полоса — упражнение в математической точности.
+                    </div>
+                    <div class="poster-meta">Zürich · 1958 · Модульная сетка 5×5</div>
+                </div>
+            </div>
+            <div class="swiss-demo-right">
+                <div class="modern-poster">
+                    <div class="modern-item">
+                        <div class="modern-item-label">CSS Grid Layout</div>
+                        <div class="modern-item-title">display: grid</div>
+                    </div>
+                    <div class="modern-item">
+                        <div class="modern-item-label">Subgrid</div>
+                        <div class="modern-item-title" style="font-size:1rem;">grid-template-columns: subgrid</div>
+                    </div>
+                    <div class="modern-item">
+                        <div class="modern-item-label">Container Queries</div>
+                        <div class="modern-item-title" style="font-size:1rem;">@container</div>
+                    </div>
+                    <div class="modern-item">
+                        <div class="modern-item-label">Современный веб</div>
+                        <div class="modern-item-title">Те же принципы,<br>новые возможности</div>
+                        <div class="modern-item-desc" style="margin-top:0.75rem;">
+                            CSS Grid — это цифровое воплощение модульной сетки, 
+                            задуманной швейцарскими дизайнерами семь десятилетий назад.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TYPE SCALE -->
+    <section class="type-section">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">05 — Типографика</div>
+                <h2 class="section-title reveal reveal-delay-1">Шкала типографики</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    Швейцарцы использовали математические пропорции для размеров шрифта. 
+                    Сегодня мы делаем то же самое через CSS clamp() и модульную шкалу.
+                </p>
+            </div>
+
+            <div class="type-scale">
+                <div class="type-card reveal">
+                    <div class="type-card-label">Заголовок H1</div>
+                    <div class="type-card-example" style="font-size: 3rem;">Аа</div>
+                    <div class="type-card-meta">font-size: 3rem / font-weight: 900 / letter-spacing: -0.04em</div>
+                </div>
+                <div class="type-card reveal reveal-delay-1">
+                    <div class="type-card-label">Заголовок H2</div>
+                    <div class="type-card-example" style="font-size: 2rem;">Бб</div>
+                    <div class="type-card-meta">font-size: 2rem / font-weight: 800 / letter-spacing: -0.03em</div>
+                </div>
+                <div class="type-card reveal reveal-delay-2">
+                    <div class="type-card-label">Основной текст</div>
+                    <div class="type-card-example" style="font-size: 1rem; font-weight: 400; line-height: 1.6;">
+                        Швейцарская типографика основана на принципах ясности, объективности и математической точности.
+                    </div>
+                    <div class="type-card-meta">font-size: 1rem / line-height: 1.6 / color: var(--gray-500)</div>
+                </div>
+                <div class="type-card reveal reveal-delay-3">
+                    <div class="type-card-label">Моноширинный</div>
+                    <div class="type-card-example" style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 400;">
+                        grid-template-columns: repeat(12, 1fr);
+                    </div>
+                    <div class="type-card-meta">font-family: JetBrains Mono / font-size: 0.85rem</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE LAB -->
+    <section class="lab-section" id="lab">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">06 — Лаборатория</div>
+                <h2 class="section-title reveal reveal-delay-1">Интерактивная<br>лаборатория</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    Переключайтесь между режимами и наблюдайте, как одна и та же идея 
+                    реализуется через разные грид-технологии.
+                </p>
+            </div>
+
+            <div class="lab-controls reveal">
+                <button class="lab-btn active" data-mode="print">Печатная сетка</button>
+                <button class="lab-btn" data-mode="flex">Flexbox</button>
+                <button class="lab-btn" data-mode="grid-3">CSS Grid 3</button>
+                <button class="lab-btn" data-mode="grid-4">CSS Grid 4</button>
+                <button class="lab-btn" data-mode="asymmetric">Асимметрия</button>
+                <button class="lab-btn" data-mode="masonry">Masonry</button>
+            </div>
+
+            <div class="lab-canvas reveal" id="labCanvas">
+                <div class="lab-grid-overlay" id="labOverlay"></div>
+                <div class="lab-items mode-print" id="labItems">
+                    <div class="lab-item">
+                        <div class="lab-item-label">Колонка 1</div>
+                        <div class="lab-item-content">Заголовок</div>
+                    </div>
+                    <div class="lab-item">
+                        <div class="lab-item-label">Колонка 2</div>
+                        <div class="lab-item-content">Текст</div>
+                    </div>
+                    <div class="lab-item">
+                        <div class="lab-item-label">Колонка 3</div>
+                        <div class="lab-item-content">Изображение</div>
+                    </div>
+                    <div class="lab-item">
+                        <div class="lab-item-label">Подвал</div>
+                        <div class="lab-item-content">Дополнительная информация</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VISUALIZER -->
+    <section class="visualizer-section" id="visualizer">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">07 — Визуализатор</div>
+                <h2 class="section-title reveal reveal-delay-1" style="color: var(--white);">Грид-визуализатор</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    Настройте параметры сетки и наблюдайте, как меняются колонки и строки в реальном времени.
+                </p>
+            </div>
+
+            <div class="visualizer-controls reveal">
+                <div class="control-group">
+                    <div class="control-label">Колонки: <span id="colCount">6</span></div>
+                    <input type="range" class="control-slider" id="colSlider" min="1" max="12" value="6">
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Строки: <span id="rowCount">4</span></div>
+                    <input type="range" class="control-slider" id="rowSlider" min="1" max="8" value="4">
+                </div>
+                <div class="control-group">
+                    <div class="control-label">Gap: <span id="gapValue">2</span>px</div>
+                    <input type="range" class="control-slider" id="gapSlider" min="0" max="20" value="2">
+                </div>
+            </div>
+
+            <div class="visualizer-grid" id="vizGrid"></div>
+
+            <div class="stats-row reveal">
+                <div>
+                    <div class="stat-number" id="cellCount">24</div>
+                    <div class="stat-label">Ячеек в сетке</div>
+                </div>
+                <div>
+                    <div class="stat-number" id="colFraction">16.67%</div>
+                    <div class="stat-label">Ширина колонки</div>
+                </div>
+                <div>
+                    <div class="stat-number">1fr</div>
+                    <div class="stat-label">Единица измерения</div>
+                </div>
+                <div>
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Возможностей</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONNECTIONS -->
+    <section class="connections-section" id="connections">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-number reveal">08 — Связи</div>
+                <h2 class="section-title reveal reveal-delay-1">Прямые<br>соответствия</h2>
+                <p class="section-desc reveal reveal-delay-2">
+                    Каждый принцип швейцарской типографики имеет прямое воплощение в современном CSS.
+                </p>
+            </div>
+
+            <div class="connections-grid reveal">
+                <div class="conn-column">
+                    <h3>Швейцарская типографика</h3>
+                    <div class="conn-item">
+                        <h4>Модульная сетка</h4>
+                        <p>Колонки, поля, направляющие, заданные на миллиметровке</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>Иерархия через масштаб</h4>
+                        <p>Кегль шрифта определяется пропорциями модуля</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>Асимметричная композиция</h4>
+                        <p>Динамичный баланс элементов по правилам золотого сечения</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>Единая система координат</h4>
+                        <p>Все элементы привязаны к общей сетке страницы</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>Гарнитура без засечек</h4>
+                        <p>Helvetica, Univers — объективная, нейтральная форма</p>
+                    </div>
+                </div>
+
+                <div class="conn-arrow">
+                    <div class="arrow-diamond"></div>
+                    <div class="arrow-line"></div>
+                    <div class="arrow-diamond"></div>
+                    <div class="arrow-line"></div>
+                    <div class="arrow-diamond"></div>
+                    <div class="arrow-line"></div>
+                    <div class="arrow-diamond"></div>
+                    <div class="arrow-line"></div>
+                    <div class="arrow-diamond"></div>
+                </div>
+
+                <div class="conn-column">
+                    <h3>Современный CSS</h3>
+                    <div class="conn-item">
+                        <h4>grid-template-columns / rows</h4>
+                        <p>Декларативное определение колонок и строк сетки</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>clamp() и модульная шкала</h4>
+                        <p>Адаптивные размеры шрифта с математическими пропорциями</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>grid-area и grid-template-areas</h4>
+                        <p>Именованные области для асимметричных макетов</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>display: grid + subgrid</h4>
+                        <p>Вложенные сетки с общей системой координат</p>
+                    </div>
+                    <div class="conn-item">
+                        <h4>font-family: system-ui, Inter</h4>
+                        <p>Гротескные шрифты для интерфейсов — наследники Helvetica</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <!-- 12x2 grid of decorative cells -->
+        </div>
+        <div class="footer-inner">
+            <div>
+                <div class="footer-brand">Грид<span>.</span>Лаборатория</div>
+                <p class="footer-desc">
+                    Исследование связи между швейцарской типографикой и современными 
+                    CSS-технологиями. От карандашной сетки к декларативному коду.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h4>Разделы</h4>
+                <a href="#swiss">Принципы</a>
+                <a href="#timeline">Эволюция</a>
+                <a href="#comparison">Сравнение</a>
+                <a href="#lab">Лаборатория</a>
+                <a href="#visualizer">Визуализатор</a>
+                <a href="#connections">Связи</a>
+            </div>
+            <div class="footer-col">
+                <h4>Источники</h4>
+                <a href="#">Müller-Brockmann, Grid Systems</a>
+                <a href="#">Ruder, Typographic Design</a>
+                <a href="#">CSS Grid Specification</a>
+                <a href="#">MDN Web Docs</a>
+                <a href="#">W3C Standards</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Грид-лаборатория. Создано с уважением к швейцарской типографике.</p>
+            <p>Helvetica Forever</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== HERO GRID ANIMATION =====
+        const heroGrid = document.getElementById('heroGrid');
+        for (let i = 0; i < 48; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'hero-grid-cell';
+            heroGrid.appendChild(cell);
+        }
+
+        const heroCells = heroGrid.querySelectorAll('.hero-grid-cell');
+        let heroInterval;
+
+        function animateHeroGrid() {
+            heroCells.forEach(c => c.className = 'hero-grid-cell');
+            const numActive = 8 + Math.floor(Math.random() * 8);
+            for (let i = 0; i < numActive; i++) {
+                const idx = Math.floor(Math.random() * 48);
+                const r = Math.random();
+                if (r < 0.6) heroCells[idx].classList.add('active');
+                else if (r < 0.8) heroCells[idx].classList.add('accent');
+                else heroCells[idx].classList.add('accent2');
+            }
+        }
+
+        animateHeroGrid();
+        heroInterval = setInterval(animateHeroGrid, 1500);
+
+        // ===== NAV SCROLL =====
+        let lastScroll = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            const current = window.pageYOffset;
+            if (current > lastScroll && current > 100) {
+                navbar.classList.add('hidden');
+            } else {
+                navbar.classList.remove('hidden');
+            }
+            lastScroll = current;
+        });
+
+        // ===== SCROLL REVEAL =====
+        const revealElements = document.querySelectorAll('.reveal, .timeline-item');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ===== LAB CONTROLS =====
+        const labBtns = document.querySelectorAll('.lab-btn');
+        const labItems = document.getElementById('labItems');
+        const labOverlay = document.getElementById('labOverlay');
+
+        const modeConfigs = {
+            'print': { cols: 5, showLines: true, linePositions: [16.67, 50, 83.33] },
+            'flex': { cols: 3, showLines: true, linePositions: [33.33, 66.67] },
+            'grid-3': { cols: 3, showLines: true, linePositions: [33.33, 66.67] },
+            'grid-4': { cols: 4, showLines: true, linePositions: [25, 50, 75] },
+            'asymmetric': { cols: 4, showLines: true, linePositions: [25, 50, 75] },
+            'masonry': { cols: 3, showLines: true, linePositions: [33.33, 66.67] }
+        };
+
+        function updateOverlay(mode) {
+            const config = modeConfigs[mode];
+            labOverlay.innerHTML = '';
+            if (config && config.showLines) {
+                config.linePositions.forEach(pos => {
+                    const line = document.createElement('div');
+                    line.className = 'col-line';
+                    line.style.left = pos + '%';
+                    labOverlay.appendChild(line);
+                });
+            }
+        }
+
+        labBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                labBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const mode = btn.dataset.mode;
+                labItems.className = 'lab-items mode-' + mode;
+                updateOverlay(mode);
+            });
+        });
+
+        updateOverlay('print');
+
+        // ===== VISUALIZER =====
+        const vizGrid = document.getElementById('vizGrid');
+        const colSlider = document.getElementById('colSlider');
+        const rowSlider = document.getElementById('rowSlider');
+        const gapSlider = document.getElementById('gapSlider');
+        const colCountEl = document.getElementById('colCount');
+        const rowCountEl = document.getElementById('rowCount');
+        const gapValueEl = document.getElementById('gapValue');
+        const cellCountEl = document.getElementById('cellCount');
+        const colFractionEl = document.getElementById('colFraction');
+
+        function updateVisualizer() {
+            const cols = parseInt(colSlider.value);
+            const rows = parseInt(rowSlider.value);
+            const gap = parseInt(gapSlider.value);
+
+            colCountEl.textContent = cols;
+            rowCountEl.textContent = rows;
+            gapValueEl.textContent = gap;
+            cellCountEl.textContent = cols * rows;
+            colFractionEl.textContent = (100 / cols).toFixed(2) + '%';
+
+            vizGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            vizGrid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+            vizGrid.style.gap = gap + 'px';
+
+            vizGrid.innerHTML = '';
+            for (let i = 0; i < cols * rows; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'viz-cell';
+                cell.textContent = `${(i % cols) + 1}:${Math.floor(i / cols) + 1}`;
+                vizGrid.appendChild(cell);
+            }
+        }
+
+        colSlider.addEventListener('input', updateVisualizer);
+        rowSlider.addEventListener('input', updateVisualizer);
+        gapSlider.addEventListener('input', updateVisualizer);
+        updateVisualizer();
+
+        // ===== FOOTER GRID =====
+        const footerGrid = document.querySelector('.footer-grid');
+        for (let i = 0; i < 24; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'footer-grid-cell';
+            footerGrid.appendChild(cell);
+        }
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
